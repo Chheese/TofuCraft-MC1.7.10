@@ -2,8 +2,7 @@ package tsuteto.tofu;
 
 import net.minecraftforge.common.config.Configuration;
 
-public class Settings
-{
+public class Settings {
     public static int entityIdTofuSlime = -1;
     public static int entityIdTofuCreeper = -1;
     public static int entityIdTofunian = -1;
@@ -16,7 +15,7 @@ public class Settings
     public static int professionIdTofunian = 1213;
 
     //public static int potionGlowingId;
-    
+
     public static boolean autoAssign = true;
     public static boolean achievement = true;
     public static int clientGlowTofuLightInterval = 2;
@@ -25,8 +24,7 @@ public class Settings
 
     public static boolean debug = Boolean.valueOf(System.getProperty("tofucraft.debug", "false"));
 
-    public static void load(Configuration conf)
-    {
+    public static void load(Configuration conf) {
         tofuDimNo = conf.get("general", "tofuDim", tofuDimNo).getInt();
         tofuBiomeId = conf.get("general", "tofuBiomeId", tofuBiomeId).getInt();
         canSaltPanUseAlpha = conf.get("general", "saltPanUsesAlpha", true, "Whether the Salt Pan uses transparent texture. If there's something funny about its appearance, set false.").getBoolean();
@@ -38,7 +36,7 @@ public class Settings
         entityIdTofuSlime = conf.get("entity", "tofuSlimeId", entityIdTofuSlime).getInt();
         entityIdTofuCreeper = conf.get("entity", "tofuCreeperId", entityIdTofuCreeper).getInt();
         entityIdTofunian = conf.get("entity", "tofunianId", entityIdTofunian).getInt();
-        
+
         //potionGlowingId = conf.get("potion", "glowingId", TcPotion.assignNewId()).getInt();
 
         achievement = conf.get("general", "achievement", achievement).getBoolean(true);

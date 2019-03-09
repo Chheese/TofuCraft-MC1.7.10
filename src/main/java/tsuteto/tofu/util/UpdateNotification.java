@@ -20,54 +20,43 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-public class UpdateNotification
-{
+public class UpdateNotification {
     private UpdateInfo updateInfo = null;
     private ModContainer container = Loader.instance().activeModContainer();
     private boolean isCompleted = false;
 
-    public boolean isCompleted()
-    {
+    public boolean isCompleted() {
         return this.isCompleted;
     }
 
-    public UpdateInfo getUpdateInfo()
-    {
+    public UpdateInfo getUpdateInfo() {
         return this.updateInfo;
     }
-    
+
     @SuppressWarnings("unchecked")
-    public void checkUpdate()
-    {
-        new Thread("TofuCraft update check")
-        {
+    public void checkUpdate() {
+        new Thread("TofuCraft update check") {
             @Override
-            public void run()
-            {
-                try
-                {
+            public void run() {
+                try {
                     // Update info reception
                     String receivedData;
-                    try
-                    {
+                    try {
                         URL url = new URL(TofuCraftCore.metadata.updateUrl);
                         InputStream con = url.openStream();
                         receivedData = new String(ByteStreams.toByteArray(con));
                         con.close();
                         ModLog.debug("receivedData:%n%s", receivedData);
-                    } catch (IOException e)
-                    {
+                    } catch (IOException e) {
                         ModLog.log(Level.WARN, e, "Failed to receive update info.");
                         return;
                     }
 
                     // Convert into Json
                     List<Map<String, Object>> updateInfoList;
-                    try
-                    {
+                    try {
                         updateInfoList = new Gson().fromJson(receivedData, List.class);
-                    } catch (JsonSyntaxException e)
-                    {
+                    } catch (JsonSyntaxException e) {
                         ModLog.log(Level.WARN, e, "Malformed update info.");
                         return;
                     }
@@ -75,8 +64,7 @@ public class UpdateNotification
                     // Retrieve update info for this MC version
                     Map<String, String> updateInfoJson = findUpdateInfoForMcVersion(updateInfoList);
 
-                    if (updateInfoJson == null)
-                    {
+                    if (updateInfoJson == null) {
                         ModLog.info("No update info for this MC version.");
                         return;
                     }
@@ -85,15 +73,12 @@ public class UpdateNotification
                     currVersion = currVersion.substring(0, currVersion.indexOf("-"));
 
                     String newVersion = updateInfoJson.get("version");
-                    if (!currVersion.equals(newVersion))
-                    {
+                    if (!currVersion.equals(newVersion)) {
                         updateInfo = new UpdateInfo();
                         updateInfo.version = updateInfoJson.get("version");
                         updateInfo.downloadUrl = updateInfoJson.get("downloadUrl");
                     }
-                }
-                finally
-                {
+                } finally {
                     isCompleted = true;
                 }
             }
@@ -103,16 +88,13 @@ public class UpdateNotification
              * @param list
              * @return
              */
-            private Map<String, String> findUpdateInfoForMcVersion(List<Map<String, Object>> list)
-            {
+            private Map<String, String> findUpdateInfoForMcVersion(List<Map<String, Object>> list) {
                 String currentVer = container.getVersion();
-                for (Map<String, Object> map : list)
-                {
+                for (Map<String, Object> map : list) {
                     boolean isMatched = container.acceptableMinecraftVersionRange()
-                            .containsVersion(new DefaultArtifactVersion((String)map.get("mcversion")));
-                    if (isMatched)
-                    {
-                        return (Map<String, String>)map.get("updateinfo");
+                            .containsVersion(new DefaultArtifactVersion((String) map.get("mcversion")));
+                    if (isMatched) {
+                        return (Map<String, String>) map.get("updateinfo");
                     }
                 }
                 return null;
@@ -120,17 +102,12 @@ public class UpdateNotification
         }.start();
     }
 
-    public void notifyUpdate(ICommandSender sender, Side side)
-    {
-        if (updateInfo != null)
-        {
-            if (side == Side.SERVER)
-            {
+    public void notifyUpdate(ICommandSender sender, Side side) {
+        if (updateInfo != null) {
+            if (side == Side.SERVER) {
                 sender.addChatMessage(new ChatComponentTranslation(
                         "tofucraft.update.server", updateInfo.version, updateInfo.downloadUrl));
-            }
-            else
-            {
+            } else {
                 ChatStyle style = new ChatStyle();
                 style.setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, updateInfo.downloadUrl));
 
@@ -144,8 +121,7 @@ public class UpdateNotification
 
     }
 
-    public static class UpdateInfo
-    {
+    public static class UpdateInfo {
         public String version;
         public String downloadUrl;
     }

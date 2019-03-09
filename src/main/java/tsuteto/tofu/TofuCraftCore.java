@@ -50,17 +50,15 @@ import tsuteto.tofu.world.biome.TcBiomes;
  * The Main Class of the TofuCraft
  *
  * @author Tsuteto
- *
  */
 @Mod(
-    modid = TofuCraftCore.modid,
-    name = "TofuCraft",
-    version = TofuCraftCore.version,
-    acceptedMinecraftVersions = "[1.7.10,1.8)",
-    dependencies = "after:BambooMod;after:IC2"
+        modid = TofuCraftCore.modid,
+        name = "TofuCraft",
+        version = TofuCraftCore.version,
+        acceptedMinecraftVersions = "[1.7.10,1.8)",
+        dependencies = "after:BambooMod;after:IC2"
 )
-public class TofuCraftCore
-{
+public class TofuCraftCore {
     public static final String modid = "TofuCraft";
     public static final String version = "2.1.7-MC1.7.10";
     public static final String resourceDomain = "tofucraft:";
@@ -81,17 +79,15 @@ public class TofuCraftCore
     private TcSaveHandler saveHandler = null;
     private MorijioManager morijioManager = null;
 
-    static
-    {
+    static {
         ModLog.modId = TofuCraftCore.modid;
         ModLog.isDebug = Settings.debug;
 
-        BIOME_TYPE_TOFU = EnumHelper.addEnum(BiomeDictionary.Type.class, "TOFU", new Class[] { BiomeDictionary.Type[].class }, new Object[]{ new BiomeDictionary.Type[0] });
+        BIOME_TYPE_TOFU = EnumHelper.addEnum(BiomeDictionary.Type.class, "TOFU", new Class[]{BiomeDictionary.Type[].class}, new Object[]{new BiomeDictionary.Type[0]});
     }
 
     @Mod.EventHandler
-    public void preload(FMLPreInitializationEvent event)
-    {
+    public void preload(FMLPreInitializationEvent event) {
         ModInfo.load(metadata);
 
         conf = new Configuration(event.getSuggestedConfigurationFile());
@@ -108,29 +104,26 @@ public class TofuCraftCore
 
         // Register liquid blocks
         TcFluids.register(event.getSide());
-        
+
         // Prepare Tofu Force Materials
         TfMaterialRegistry.init();
 
         TfCondenserRecipeRegistry.init();
 
         // Add Achievements
-        if (Settings.achievement)
-        {
+        if (Settings.achievement) {
             TcAchievements.load();
         }
 
         // Update check!
-        if (Settings.updateCheck)
-        {
+        if (Settings.updateCheck) {
             update = new UpdateNotification();
             update.checkUpdate();
         }
     }
 
     @Mod.EventHandler
-    public void load(FMLInitializationEvent event)
-    {
+    public void load(FMLInitializationEvent event) {
         // Register usage of the bone meal
         MinecraftForge.EVENT_BUS.register(new EventBonemeal());
 
@@ -163,10 +156,10 @@ public class TofuCraftCore
 
         {
             TcChunkProviderEvent eventhandler = new TcChunkProviderEvent();
-            
+
             // Nether populating
             MinecraftForge.EVENT_BUS.register(eventhandler);
-    
+
             // Ore generation
             MinecraftForge.ORE_GEN_BUS.register(eventhandler);
         }
@@ -195,8 +188,7 @@ public class TofuCraftCore
         Recipes.registerExternalModRecipes();
 
         // CraftGuide
-        if (Loader.isModLoaded("craftguide"))
-        {
+        if (Loader.isModLoaded("craftguide")) {
             CraftGuideLoader.load();
         }
 
@@ -205,8 +197,7 @@ public class TofuCraftCore
     }
 
     @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event)
-    {
+    public void postInit(FMLPostInitializationEvent event) {
         TcEntity.addSpawns();
 
         // Register potion effects
@@ -218,14 +209,13 @@ public class TofuCraftCore
     }
 
     @Mod.EventHandler
-    public void serverStarting(FMLServerStartingEvent event)
-    {
+    public void serverStarting(FMLServerStartingEvent event) {
         // Register commands
         event.registerServerCommand(new CommandTofuSlimeCheck());
         event.registerServerCommand(new CommandTofuCreeperSpawn());
 
         // Initialize world save handler
-        SaveHandler saveHandler = (SaveHandler)event.getServer().worldServerForDimension(0).getSaveHandler();
+        SaveHandler saveHandler = (SaveHandler) event.getServer().worldServerForDimension(0).getSaveHandler();
         this.saveHandler = new TcSaveHandler(saveHandler.getWorldDirectory());
 
         // Load Morijio info
@@ -236,19 +226,16 @@ public class TofuCraftCore
         TofuCreeperSeed.instance().initSeed(event.getServer().worldServerForDimension(0).getSeed());
 
         // Notify if update is available
-        if (update != null && event.getSide() == Side.SERVER)
-        {
+        if (update != null && event.getSide() == Side.SERVER) {
             update.notifyUpdate(event.getServer(), event.getSide());
         }
     }
 
     @Mod.EventHandler
-    public void serverStopping(FMLServerStoppingEvent event)
-    {
+    public void serverStopping(FMLServerStoppingEvent event) {
     }
 
-    public void registerChestLoot(ItemStack loot, int min, int max, int rarity)
-    {
+    public void registerChestLoot(ItemStack loot, int min, int max, int rarity) {
         ChestGenHooks.addItem(ChestGenHooks.DUNGEON_CHEST,
                 new WeightedRandomChestContent(loot, min, max, rarity));
         ChestGenHooks.addItem(ChestGenHooks.MINESHAFT_CORRIDOR,
@@ -263,30 +250,26 @@ public class TofuCraftCore
                 new WeightedRandomChestContent(loot, min, max, rarity));
     }
 
-    public static TcSaveHandler getSaveHandler()
-    {
+    public static TcSaveHandler getSaveHandler() {
         return instance.saveHandler;
     }
 
-    public static MorijioManager getMorijioManager()
-    {
+    public static MorijioManager getMorijioManager() {
         return instance.morijioManager;
     }
 
     @SideOnly(Side.CLIENT)
-    public static class ClientProxy implements ISidedProxy
-    {
+    public static class ClientProxy implements ISidedProxy {
         @Override
-        public void registerComponents()
-        {
+        public void registerComponents() {
             MinecraftForge.EVENT_BUS.register(new TcTextures());
             MinecraftForge.EVENT_BUS.register(new GameScreenHandler());
 
             LoaderDecorationBlock.registerBlockRenderer();
             TcEntity.registerEntityRenderer();
 
-            MinecraftForgeClient.registerItemRenderer(TcItems.zundaBow, (IItemRenderer)TcItems.zundaBow);
-            MinecraftForgeClient.registerItemRenderer(TcItems.bugle, (IItemRenderer)TcItems.bugle);
+            MinecraftForgeClient.registerItemRenderer(TcItems.zundaBow, (IItemRenderer) TcItems.zundaBow);
+            MinecraftForgeClient.registerItemRenderer(TcItems.bugle, (IItemRenderer) TcItems.bugle);
 
             VillagerRegistry vill = VillagerRegistry.instance();
             vill.registerVillagerSkin(Settings.professionIdTofucook, new ResourceLocation("tofucraft", "textures/mob/tofucook.png"));
@@ -294,17 +277,14 @@ public class TofuCraftCore
     }
 
     @SideOnly(Side.SERVER)
-    public static class ServerProxy implements ISidedProxy
-    {
+    public static class ServerProxy implements ISidedProxy {
         @Override
-        public void registerComponents()
-        {
+        public void registerComponents() {
             GameRegistry.registerTileEntity(TileEntityMorijio.class, "TmMorijio");
         }
     }
 
-    public static interface ISidedProxy
-    {
+    public static interface ISidedProxy {
         public void registerComponents();
     }
 }

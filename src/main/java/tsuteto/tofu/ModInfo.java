@@ -2,10 +2,8 @@ package tsuteto.tofu;
 
 import cpw.mods.fml.common.ModMetadata;
 
-public class ModInfo
-{
-    public static void load(ModMetadata meta)
-    {
+public class ModInfo {
+    public static void load(ModMetadata meta) {
         meta.modId = TofuCraftCore.modid;
         meta.name = "豆腐Craft (TofuCraft)";
         meta.description = "豆腐をおいしく頂きつつ本格豆腐建築を嗜むMODです。味噌、醤油、納豆、ずんだ、もやし、湯葉もあるよ。\n\n"

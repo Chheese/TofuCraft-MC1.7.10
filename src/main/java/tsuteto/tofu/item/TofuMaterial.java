@@ -6,8 +6,7 @@ import tsuteto.tofu.data.TofuInfo;
 import tsuteto.tofu.init.TcBlocks;
 import tsuteto.tofu.init.TcItems;
 
-public enum TofuMaterial
-{
+public enum TofuMaterial {
     kinu,
     momen,
     ishi,
@@ -26,32 +25,26 @@ public enum TofuMaterial
     diamond,
     miso;
 
-    TofuMaterial()
-    {
+    TofuMaterial() {
     }
 
-    public BlockTofuBase getBlock()
-    {
+    public BlockTofuBase getBlock() {
         return this.getBlockInfo().getBlock();
     }
 
-    public TofuInfo getBlockInfo()
-    {
+    public TofuInfo getBlockInfo() {
         return TcBlocks.tofuInfoMap.get(this);
     }
 
-    public Item getItem()
-    {
+    public Item getItem() {
         return TcItems.tofuItems.get(this);
     }
 
-    public static TofuMaterial get(int id)
-    {
+    public static TofuMaterial get(int id) {
         return values()[id];
     }
 
-    public int id()
-    {
+    public int id() {
         return this.ordinal();
     }
 }
